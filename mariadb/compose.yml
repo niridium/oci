@@ -1,0 +1,26 @@
+services:
+  mariadb-service:
+    image: quay.io/niridium/mariadb:latest
+    container_name: mariadb-container
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    # volumes:
+    #   - db-data:/var/lib/mysql
+
+  phpmyadmin-service:
+    image: docker.io/phpmyadmin:5.2.3-apache
+    container_name: phpmyadmin-container
+    restart: unless-stopped
+    environment:
+      PMA_HOST:             mariadb-service
+      PMA_PORT:             3306
+      MYSQL_ROOT_PASSWORD:  secret
+    ports:
+      - "8000:80"
+    depends_on:
+      - mariadb-service
+
+volumes:
+  db-data:
+    name: mariadb-data
